@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "boxless-esg"
+version = "0.1.0"
+description = "Boxless ESG: text-grounded subscene localization (mask-first-ready)"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy",
+  "pillow",
+  "scipy",
+  "opencv-contrib-python",
+  "timm",
+  "transformers",
+  "safetensors",
+  "open_clip_torch",
+  # GroundingDINO is VCS-installed; see README instructions
+]
+
+[project.scripts]
+boxless-esg = "boxless_esg.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

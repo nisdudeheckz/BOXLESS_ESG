@@ -1,0 +1,2 @@
+[console_scripts]
+boxless-esg = boxless_esg.cli:main

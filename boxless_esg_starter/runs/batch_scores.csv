@@ -1,0 +1,4 @@
+image_path,text,final_score,prob_calibrated,out_dir
+C:/Users/deepn/Downloads/unnamed.png,two people talking near a cart,0.594877129873711,0.0547681599855423,runs\batch\ex_0001
+C:\Users\deepn\Downloads\4117496119_0857f6ea89.jpg,a lady in yellow saree standing beside a bike,0.5999412054876418,0.055165715515613556,runs\batch\ex_0002
+C:\Users\deepn\Downloads\media_gallery-2017-04-11-7-1_c91bb25598d5491ced35d25c28c898a9.jpg,a man walking besides an auto rickshaw,0.6406762183054403,0.056800950318574905,runs\batch\ex_0003

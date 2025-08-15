@@ -1,0 +1,6 @@
+numpy
+opencv-contrib-python
+Pillow
+matplotlib
+scipy
+shapely
