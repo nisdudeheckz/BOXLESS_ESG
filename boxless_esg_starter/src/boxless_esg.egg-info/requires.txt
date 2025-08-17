@@ -1,8 +1,0 @@
-numpy
-pillow
-scipy
-opencv-contrib-python
-timm
-transformers
-safetensors
-open_clip_torch
