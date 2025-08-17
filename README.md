@@ -1,126 +1,101 @@
-# Boxless ESG — Scene Localization Without Explicit Bounding Boxes
+Boxless ESG: Scene Localization Pipeline
 
-Boxless ESG is a modular, interpretable pipeline for **text-based scene localization** that works without explicit bounding boxes in training data.
+This repository contains an optimized scene-localization pipeline that extends Grounding DINO with custom creativity and interpretability layers. The goal is to detect and localize objects or relations in natural scenes without relying only on bounding boxes.
 
-It takes an **image** and a **natural language query**, and outputs:
-- A **mask** of the detected region
-- A **narrative crop** for storytelling
-- An **evidence JSON** containing all intermediate scores and reasoning
+🚀 Features
 
----
+Hybrid Proposals: MobileSAM + filtered Selective Search (≤50, deduped).
 
-## 🚀 Features
-- **Open-vocabulary** — Works with arbitrary queries
-- **Multi-stage fusion** — Combines CLIP semantics, GDINO gating, spatial relations, affordances
-- **Explainable** — Outputs full scoring breakdown
-- **No retraining required** — Works zero-shot with pretrained models
+Hierarchical Scoring: Lightweight GDINO gate + heavy scoring (CLIP, GDINO overlap, Relation, Affordance).
 
----
+Overlay Support: Save query overlays on images for visualization.
 
-## 📂 Repository Structure
-src/
-boxless_esg/
-pipeline.py # Main orchestration logic
-gdino_gate.py # GDINO-based text-aware gating
-clip_sem.py # CLIP semantic similarity
-relations.py # Spatial reasoning functions
-affordance.py # Affordance context scoring
-precision_bbox.py # Special-case precision mode
-utils.py # Box/mask utilities
-proposals/
-selective_search.py # Region proposal generation
-docs/
-final_documentation.md # Full 6-page project documentation
-weights/
-clip/ # CLIP pretrained model
-gdino/ # GDINO pretrained model
+Negative Test Handling: Supports queries that do not exist in the image.
 
-yaml
-Copy
-Edit
+Dataset Included: Test images are included under data/demo_images/.
 
----
+📂 Repository Structure
+boxless_esg_starter/
+│
+├── scripts/
+│   ├── run_one.py           # Main entry for running single queries
+│   ├── run_batch.py         # Run multiple queries on multiple images
+│
+├── src/boxless_esg/
+│   ├── pipeline.py          # Core pipeline logic
+│   ├── overlay.py           # Overlay saving utility
+│   ├── scoring/             # CLIP, GDINO, Relation, Affordance modules
+│   ├── proposals/           # MobileSAM + Selective Search hybrid
+│
+├── weights/                 # Pretrained model weights (add via release / Git LFS)
+│
+├── data/
+│   ├── demo_images/         # Sample images for testing
+│   │   ├── OIP (1).jpeg
+│   │   ├── OIP (2).jpeg
+│   │   ├── OIP.jpeg
+│
+├── runs/                    # Outputs saved here
+│
+└── README.md
 
-## ⚙️ Installation
+⚙️ Installation
+git clone https://github.com/<your-username>/<your-repo>.git
+cd boxless_esg_starter
 
-### 1️⃣ Clone the repo
-```bash
-git clone https://github.com/<your-username>/boxless-esg.git
-cd boxless-esg
-2️⃣ Create environment
-bash
-Copy
-Edit
-conda create -n boxless-esg python=3.10 -y
-conda activate boxless-esg
-3️⃣ Install dependencies
-bash
-Copy
-Edit
+# (Optional but recommended)
+python -m venv venv
+source venv/bin/activate   # On Linux/Mac
+venv\Scripts\activate      # On Windows
+
 pip install -r requirements.txt
-📥 Pretrained Weights
-CLIP (ViT-L/14) — Download
 
-Grounding DINO — Download
-
-Place weights in weights/ directory following:
-
-bash
-Copy
-Edit
-weights/
-  clip/ViT-L-14.pt
-  gdino/groundingdino_swinb_cogcoor.pth
 ▶️ Usage
-Basic Command
-bash
-Copy
-Edit
-python -m src.boxless_esg \
-  --image "test_images/cart_people.jpg" \
-  --text "two people near a cart" \
-  --out_dir outputs/demo1 \
+Single Image + Query
+python -m scripts.run_one \
+  --image "data/demo_images/OIP (1).jpeg" \
+  --text "a person in a white t shirt" \
+  --out_dir runs/test1 \
   --max_regions 600 \
-  --gate_keep_k 60
-Output Files
-mask.png – Binary mask of detected region
+  --gate_keep 8 \
+  --save_overlay
 
-narrative_crop.jpg – Cropped region for storytelling
+Example Test Cases (x4)
 
-evidence.json – Scoring breakdown for interpretability
+data/demo_images/OIP (1).jpeg → "a person in a white t shirt"
 
-📊 Example Results
-Query	Input Image	Output Crop
-"Two people near a cart"	
-"Person left of bicycle"	
+data/demo_images/OIP (1).jpeg → "a person using phone"
 
-🛠 Technical Overview
-The pipeline:
+data/demo_images/OIP.jpeg → "a child playing with a ball"
 
-Generates proposals with Selective Search
+data/demo_images/OIP (2).jpeg → "a dog jumping over fence" (negative test)
 
-Deduplicates using IoU filtering
+📊 Output
 
-Passes proposals through GDINO gate to retain text-relevant candidates
+Overlays and results are saved to runs/<exp_name>/
 
-Scores with CLIP for semantic match
+Each run saves:
 
-Adds relation scoring for “near”, “left of”, “right of”
+overlay.png → image with highlighted detections
 
-Penalizes oversized regions (area penalty)
+results.json → structured outputs with scores + evidence
 
-Adds affordance reasoning (placeholder mode)
+📦 Weights
 
-Fuses scores with weights: clip=0.70, gdino=0.05, rel=0.20, afford=0.05
+Model weights should be placed in the weights/ directory.
+You can use Git LFS for managing large model files.
 
-Outputs the best match and full evidence
+git lfs install
+git lfs track "*.pth"
 
-Full architecture details: Documentation
+📌 Notes
 
+The save_overlay feature has been integrated into the pipeline.
 
-📧 Contact
-For queries, contact:
+Works with both positive queries and negative test cases.
 
- Nischal Deep
+Extendable for new scoring modules and datasets.
 
-GitHub: nisdudecheckz
+📝 License
+
+MIT License © 2025
